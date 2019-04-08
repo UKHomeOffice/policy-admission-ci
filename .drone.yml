@@ -6,7 +6,7 @@ pipeline:
   tests:
     image: golang:1.10.2
     secrets:
-    - my_fake_secret
+      - my_fake_secret
     commands:
       - echo "hello: $${MY_FAKE_SECRET}"
       - make test
