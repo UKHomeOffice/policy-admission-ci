@@ -5,7 +5,6 @@ workspace:
 pipeline:
   tests:
     image: golang:1.10.2
-    privileged: true
     commands:
       - make test
       - make static
