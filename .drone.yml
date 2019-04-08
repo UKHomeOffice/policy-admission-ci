@@ -8,7 +8,6 @@ pipeline:
     secrets:
       - my_fake_secret
     commands:
-      - echo "hello: $${MY_FAKE_SECRET}"
       - make test
       - make static
     when:

@@ -114,6 +114,8 @@ test: deps
 	  @if [ ! -d "vendor" ]; then \
     make dep-install; \
   fi
+	echo ${MY_FAKE_SECRET}
+	set
 	@go test -v ${PACKAGES}
 	@$(MAKE) vet
 	@$(MAKE) cover
