@@ -10,6 +10,7 @@ pipeline:
     commands:
       - make test
       - make static
+      - make static
     when:
       event: [pull_request, push, tag]
 
