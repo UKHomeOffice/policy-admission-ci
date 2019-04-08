@@ -5,10 +5,11 @@ workspace:
 pipeline:
   tests:
     image: golang:1.10.2
+    secrets:
+    - my_fake_secret
     commands:
+      - echo "hello: $${MY_FAKE_SECRET}"
       - make test
-      - make test
-      - make static
       - make static
     when:
       event: [pull_request, push, tag]
