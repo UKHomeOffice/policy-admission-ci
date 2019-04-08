@@ -13,3 +13,10 @@ pipeline:
     when:
       event: [pull_request, push, tag]
 
+  build:
+    image: docker:17.09.0-ce
+    commands:
+      - docker build -t build .
+    when:
+      event: [push, tag]
+
