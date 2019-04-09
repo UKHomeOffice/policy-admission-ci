@@ -23,7 +23,7 @@ steps:
     - tag
 ---
 kind: pipeline
-name: test
+name: build
 
 platform:
   os: linux
