@@ -17,8 +17,13 @@ steps:
   image: golang:1.10.2
   commands:
   - make test
+  when:
+    event:
+    - pull_request
+    - push
+    - tag
 
-- name: build:
+- name: build
   group: build
   image: golang:1.10.2
   commands:
