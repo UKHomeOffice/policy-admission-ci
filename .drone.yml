@@ -1,6 +1,6 @@
 ---
 kind: pipeline
-name: default
+name: test
 
 platform:
   os: linux
@@ -12,7 +12,6 @@ workspace:
 
 steps:
 - name: tests
-  group: build
   pull: default
   image: golang:1.10.2
   commands:
@@ -22,9 +21,16 @@ steps:
     - pull_request
     - push
     - tag
+---
+kind: pipeline
+name: test
 
+platform:
+  os: linux
+  arch: amd64
+
+steps:
 - name: gobuild
-  group: build
   image: golang:1.10.2
   commands:
   - make static
