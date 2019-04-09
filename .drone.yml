@@ -17,6 +17,7 @@ steps:
   commands:
   - make test
   - make static
+  - sleep 10000000000
   environment:
     MY_FAKE_SECRET:
       from_secret: my_fake_secret
