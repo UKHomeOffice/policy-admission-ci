@@ -23,7 +23,7 @@ steps:
     - push
     - tag
 
-- name: build
+- name: gobuild
   group: build
   image: golang:1.10.2
   commands:
