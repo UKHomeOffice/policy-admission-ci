@@ -1,29 +1,44 @@
+---
+kind: pipeline
+name: default
+
+platform:
+  os: linux
+  arch: amd64
+
 workspace:
   base: /go
   path: src/github.com/UKHomeOffice/policy-admission
 
-pipeline:
-  tests:
-    image: golang:1.10.2
-    secrets:
-      - my_fake_secret
-    commands:
-      - make test
-      - make static
-    when:
-      event: [pull_request, push, tag]
+steps:
+- name: tests
+  pull: default
+  image: golang:1.10.2
+  commands:
+  - make test
+  - make static
+  environment:
+    MY_FAKE_SECRET:
+      from_secret: my_fake_secret
+  when:
+    event:
+    - pull_request
+    - push
+    - tag
 
-  build:
-    image: docker:17.09.0-ce
-    environment:
-    - DOCKER_HOST=tcp://docker:2375
-    commands:
-      - docker build -t build .
-    when:
-      event: [push, tag]
-
+- name: build
+  pull: default
+  image: docker:17.09.0-ce
+  commands:
+  - docker build -t build .
+  environment:
+    DOCKER_HOST: tcp://docker:2375
+  when:
+    event:
+    - push
+    - tag
 
 services:
 - name: docker
   image: docker:18.04.0-dind
-  privileged: true
+  pull: default
