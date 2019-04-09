@@ -12,10 +12,16 @@ workspace:
 
 steps:
 - name: tests
+  group: build
   pull: default
   image: golang:1.10.2
   commands:
   - make test
+
+- name: build:
+  group: build
+  image: golang:1.10.2
+  commands:
   - make static
   - sleep 30
   environment:
