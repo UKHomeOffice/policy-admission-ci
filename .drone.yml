@@ -22,6 +22,7 @@ pipeline:
     when:
       event: [push, tag]
 
+
 services:
 - name: docker
   image: docker:18.04.0-dind
