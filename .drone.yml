@@ -7,7 +7,7 @@ workspace:
   path: src/github.com/UKHomeOffice/policy-admission
 
 steps:
-- name: tests
+- name: deps
   pull: default
   image: golang:1.10.2
   commands:
@@ -17,7 +17,6 @@ steps:
     - pull_request
     - push
     - tag
-
 ---
 kind: pipeline
 name: testing
@@ -31,12 +30,9 @@ steps:
   image: golang:1.10.2
   commands:
   - make test
-  - make static
-  - sleep 30
 
 depends_on:
 - deps
-
 ---
 kind: pipeline
 name: building
@@ -50,34 +46,30 @@ steps:
   image: golang:1.10.2
   commands:
   - make static
-
-depends_on:
-- deps
-
----
-kind: pipeline
-name: docker
-
-steps:
-- name: build
+- name: package
   pull: default
   image: docker:17.09.0-ce
   commands:
   - docker build -t build .
-  environment:
-    DOCKER_HOST: tcp://docker:2375
+  volumes:
+  - name: dockersock
+    path: /var/run
   when:
     event:
     - push
     - tag
+    - deployment
 
 depends_on:
-- testing
-- building
+- deps
 
 services:
 - name: docker
-  image: docker:18.04.0-dind
-  pull: default
-  ports:
-  - 2375
+  image: docker:dind
+  volumes:
+  - name: dockersock
+    path: /var/run
+
+volumes:
+- name: dockersock
+  temp: {}
