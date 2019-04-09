@@ -15,8 +15,14 @@ pipeline:
 
   build:
     image: docker:17.09.0-ce
+    environment:
+    - DOCKER_HOST=tcp://docker:2375
     commands:
       - docker build -t build .
     when:
       event: [push, tag]
 
+services:
+- name: docker
+  image: docker:18.04.0-dind
+  privileged: true
