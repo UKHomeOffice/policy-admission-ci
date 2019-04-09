@@ -1,10 +1,6 @@
 ---
 kind: pipeline
-name: test
-
-platform:
-  os: linux
-  arch: amd64
+name: deps
 
 workspace:
   base: /go
@@ -15,35 +11,54 @@ steps:
   pull: default
   image: golang:1.10.2
   commands:
-  - make test
+  - make deps
   when:
     event:
     - pull_request
     - push
     - tag
+
 ---
 kind: pipeline
-name: build
+name: testing
 
-platform:
-  os: linux
-  arch: amd64
+workspace:
+  base: /go
+  path: src/github.com/UKHomeOffice/policy-admission
+
+steps:
+- name: gobuild
+  image: golang:1.10.2
+  commands:
+  - make test
+  - make static
+  - sleep 30
+
+depends_on:
+- deps
+
+---
+kind: pipeline
+name: building
+
+workspace:
+  base: /go
+  path: src/github.com/UKHomeOffice/policy-admission
 
 steps:
 - name: gobuild
   image: golang:1.10.2
   commands:
   - make static
-  - sleep 30
-  environment:
-    MY_FAKE_SECRET:
-      from_secret: my_fake_secret
-  when:
-    event:
-    - pull_request
-    - push
-    - tag
 
+depends_on:
+- deps
+
+---
+kind: pipeline
+name: docker
+
+steps:
 - name: build
   pull: default
   image: docker:17.09.0-ce
@@ -55,6 +70,10 @@ steps:
     event:
     - push
     - tag
+
+depends_on:
+- testing
+- building
 
 services:
 - name: docker
